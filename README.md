@@ -47,7 +47,7 @@ CUDA_VISIBLE_DEVICES=0 python neox_inference.py EleutherAI/gpt-neox-20b --wbits 
 
 
 
-# Acknowledgements
+## Acknowledgements
 This code if a fork from [GPTQ-for-LLaMA](https://github.com/qwopqwop200/GPTQ-for-LLaMa) which is based on [GPTQ](https://github.com/IST-DASLab/gptq) by [IST-DASLab](https://github.com/IST-DASLab)   
 [GPT-NeoX](https://huggingface.co/EleutherAI/gpt-neox-20b) is host by [EleutherAI](https://www.eleuther.ai/)  
 Triton GPTQ kernel code is based on [GPTQ-triton](https://github.com/fpgaminer/GPTQ-triton)  
