@@ -1,1 +1,7 @@
 __pycache__/
+.autoenv
+.autoenv_leave
+
+venv
+
+*.pt
