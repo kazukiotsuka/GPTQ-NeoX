@@ -81,7 +81,15 @@ def neox_sequential(model, dataloader, dev):
 
         layer = layers[i].to(dev)
         full = find_layers(layer)
-        sequential = [list(full.keys())]
+        if args.true_sequential:
+            sequential = [
+                ['attention.query_key_value'],  # qkv_proj
+                ['attention.dense'],  # o_proj
+                ['mlp.dense_h_to_4h'],  # up_proj
+                ['mlp.dense_4h_to_h']  # down_proj
+            ]
+        else:
+            sequential = [list(full.keys())]
 
         for names in sequential:
             subset = {n: full[n] for n in names}
@@ -380,8 +388,12 @@ if __name__ == '__main__':
     parser.add_argument('--check', action='store_true', help='Whether to compute perplexity during benchmarking for verification.')
     parser.add_argument('--sym', action='store_true', help='Whether to perform symmetric quantization.')
     parser.add_argument('--act-order', action='store_true', help='Whether to apply the activation order GPTQ heuristic')
+    parser.add_argument('--true-sequential', action='store_true', help='Whether to run in true sequential model.')
     parser.add_argument('--new-eval', action='store_true', help='Whether to use the new PTB and C4 eval')
     args = parser.parse_args()
+
+    for arg in vars(args):
+        print(f"{arg}: {getattr(args, arg)}")
 
     if type(args.load) is not str:
         args.load = args.load.as_posix()
