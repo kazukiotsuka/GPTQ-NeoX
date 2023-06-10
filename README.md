@@ -1,4 +1,4 @@
-## GPTQ-GPTX
+## GPTQ-NeoX
 4 bits quantization for GPT-NeoX
 
 
