@@ -9,6 +9,7 @@ from utils import find_layers, DEV, set_seed, get_wikitext2, get_ptb, get_c4, ge
 import transformers
 from transformers import AutoTokenizer
 
+import time
 
 def get_llama(model):
 
@@ -23,6 +24,19 @@ def get_llama(model):
     model.seqlen = 2048
     return model
 
+def get_tokenizer(model):
+    from transformers import AutoTokenizer, LlamaTokenizer
+    if 'llama' in model:
+        try:
+            tokenizer = LlamaTokenizer.from_pretrained(model, use_fast=False)
+        except:
+            tokenizer = LlamaTokenizer.from_pretrained(model, use_fast=True)
+    else:
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(model, use_fast=False)
+        except:
+            tokenizer = AutoTokenizer.from_pretrained(model, use_fast=True)
+    return tokenizer
 
 def load_quant(model, checkpoint, wbits, groupsize=-1, fused_mlp=True, eval=True, warmup_autotune=True):
     from transformers import LlamaConfig, LlamaForCausalLM
@@ -113,7 +127,8 @@ if __name__ == '__main__':
         model.eval()
 
     model.to(DEV)
-    tokenizer = AutoTokenizer.from_pretrained(args.model, use_fast=False)
+    tokenizer = get_tokenizer(args.model)
+    t = time.perf_counter()
     input_ids = tokenizer.encode(args.text, return_tensors="pt").to(DEV)
 
     with torch.no_grad():
@@ -126,3 +141,4 @@ if __name__ == '__main__':
             temperature=args.temperature,
         )
     print(tokenizer.decode([el.item() for el in generated_ids[0]]))
+    print(f"\nelapse: {round(time.perf_counter()-t, 2)} sec")
